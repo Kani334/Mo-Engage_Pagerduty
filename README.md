@@ -7,8 +7,9 @@ unless the field flips back to "No" and then to "Yes" again.
 
 ## How it works
 
-1. Every `POLL_INTERVAL_MINUTES`, the app fetches tickets updated since the
-   last poll (`GET /tickets?updated_since=...`).
+1. Every `POLL_INTERVAL_MINUTES`, the app fetches tickets updated within the
+   configured lookback window (`GET /tickets?updated_since=...`). The overlap
+   prevents a short restart or scheduling delay from skipping a ticket.
 2. For each ticket, it checks `custom_fields.cf_firstresponses_overdue === "Yes"`.
 3. If met and not already handled, it fires a PagerDuty event
    (`POST /v2/enqueue`) with a `dedup_key` of `freshdesk-ticket-<id>`, so
@@ -59,6 +60,8 @@ restarts/redeploys.
 - **Polling vs. webhooks**: this polls on a timer rather than reacting
   instantly to Freshdesk automation webhooks. Lower `POLL_INTERVAL_MINUTES`
   for faster reaction time, balanced against Freshdesk API rate limits.
+- **Lookback window**: `POLL_LOOKBACK_MINUTES` defaults to 60. Processed-ticket
+   state prevents the overlap from creating duplicate PagerDuty incidents.
 - **Rate limits**: Freshdesk and PagerDuty both rate-limit their APIs. If you
   have a very high ticket volume, consider narrowing the Freshdesk query
   (e.g. by adding a saved-search/company filter) instead of scanning every

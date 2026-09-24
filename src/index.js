@@ -15,6 +15,7 @@ app.listen(config.port, () => {
 
 const cronExpression = `*/${config.poll.intervalMinutes} * * * *`;
 console.log(`Polling Freshdesk every ${config.poll.intervalMinutes} minute(s)`);
+console.log(`Polling with a ${config.poll.lookbackMinutes}-minute overlap window`);
 
 cron.schedule(cronExpression, () => {
   runPollCycle().catch((err) => console.error('[poll] unexpected error:', err));

@@ -6,9 +6,12 @@ const stateStore = require('./stateStore');
 async function runPollCycle() {
   const state = stateStore.load();
   const pollStartedAt = new Date();
-  const since =
-    state.lastPollTime ||
-    new Date(Date.now() - config.poll.intervalMinutes * 60000).toISOString();
+  const lookbackSince = new Date(
+    pollStartedAt.getTime() - config.poll.lookbackMinutes * 60000
+  ).toISOString();
+  const since = state.lastPollTime && state.lastPollTime > lookbackSince
+    ? state.lastPollTime
+    : lookbackSince;
 
   console.log(`[poll] checking tickets updated since ${since}`);
 
