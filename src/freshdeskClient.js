@@ -17,6 +17,7 @@ const freshdeskDomain = config.freshdesk.domain
 
 const client = axios.create({
   baseURL: `https://${freshdeskDomain}.freshdesk.com/api/v2`,
+  timeout: config.poll.requestTimeoutMs,
   auth: { username: config.freshdesk.apiKey, password: 'X' },
   headers: { 'Content-Type': 'application/json' },
   httpsAgent,

@@ -43,17 +43,23 @@ npm start
 ```
 
 The app exposes `GET /health` for uptime checks and starts polling
-immediately, then on the configured interval.
+immediately, then on the configured interval. `POST /poll` runs one poll cycle
+on demand and requires the `x-poll-secret` header to match `POLL_SECRET`.
+API requests time out after 30 seconds by default; override this with
+`POLL_REQUEST_TIMEOUT_MS` if needed.
 
 ## Deploying
 
 This is a small long-running Node process — it needs to keep running (not a
 one-off serverless function) so the cron schedule and `data/state.json` stay
-alive. It runs as-is on any host that keeps a Node process running long-term
-(a small VM, Docker container, Render/Railway/Fly.io background worker,
-etc.). If you deploy on a platform with an ephemeral filesystem, swap
-`stateStore.js` for a small database or a Redis key so state survives
-restarts/redeploys.
+alive. Render free web services can spin down after inactivity, which pauses
+the in-process cron. Set `POLL_SECRET`, then configure an external scheduler
+such as cron-job.org to send `POST https://<your-service>/poll` every five
+minutes with the `x-poll-secret` header. The request wakes the service and
+starts a poll cycle. A Render background worker or another host that stays
+running can use the internal cron without an external scheduler. If you deploy
+on a platform with an ephemeral filesystem, swap `stateStore.js` for a small
+database or a Redis key so state survives restarts/redeploys.
 
 ## Notes & limitations
 

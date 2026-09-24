@@ -3,6 +3,7 @@ const config = require('../config');
 
 const restClient = axios.create({
   baseURL: 'https://api.pagerduty.com',
+  timeout: config.poll.requestTimeoutMs,
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/vnd.pagerduty+json;version=2',

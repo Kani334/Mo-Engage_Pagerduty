@@ -18,6 +18,8 @@ module.exports = {
   poll: {
     intervalMinutes: Number(process.env.POLL_INTERVAL_MINUTES || 5),
     lookbackMinutes: Number(process.env.POLL_LOOKBACK_MINUTES || 60),
+    secret: process.env.POLL_SECRET || '',
+    requestTimeoutMs: Number(process.env.POLL_REQUEST_TIMEOUT_MS || 30000),
   },
   port: process.env.PORT || 4000,
 };
