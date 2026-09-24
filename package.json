@@ -1,0 +1,15 @@
+{
+  "name": "freshdesk-pagerduty-integration",
+  "version": "1.0.0",
+  "description": "Polls Freshdesk for tickets where 'Firstresponses Overdue' = Yes and automatically creates a PagerDuty incident, then posts the incident details back as a private note on the ticket.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.7",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "node-cron": "^3.0.3"
+  }
+}
